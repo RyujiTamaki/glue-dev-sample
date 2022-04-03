@@ -1,0 +1,37 @@
+version: '3.5'
+services:
+  glue.dev.s3.local:
+    image: localstack/localstack:0.12.8
+    environment:
+      - SERVICES=s3
+      # dummy configure
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      - AWS_DEFAULT_OUTPUT=json
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    networks:
+      - glue.dev.network
+  glue.dev.summary:
+    container_name: glue.dev
+    image: amazon/aws-glue-libs:glue_libs_3.0.0_image_01
+    volumes:
+      - ./:/home/glue_user/workspace/jupyter_workspace
+      - ./spark.conf:/home/glue_user/spark/conf/spark-defaults.conf
+    environment:
+      - DISABLE_SSL=true
+      # dummy configure
+      - AWS_REGION=ap-northeast-1
+      - AWS_OUTPUT=json
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    ports:
+      # jupyterlabのポート
+      - 8888:8888
+      # spark uiのポート
+      - 4040:4040
+    networks:
+      - glue.dev.network
+    command: /home/glue_user/jupyter/jupyter_start.sh
+networks:
+  glue.dev.network:
+    name: glue.dev.network
