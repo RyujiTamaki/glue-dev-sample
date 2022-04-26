@@ -1,6 +1,7 @@
 version: '3.5'
 services:
   glue.dev.s3.local:
+    container_name: s3.dev
     image: localstack/localstack:0.12.8
     environment:
       - SERVICES=s3
